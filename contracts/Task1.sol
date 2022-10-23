@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 /**
  *  @title Students register
- *. @notice StudentsRegister is an smart contract to register the marks of students. The number of
+ *. @notice StudentsRegister is a smart contract to register the marks of students. The number of
  *          marks per student and its names are decided at contruct time. Only the contract owner
  *          can register a new student.
  */
