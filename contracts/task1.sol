@@ -22,8 +22,12 @@ contract StudentsRegister {
     mapping(address => Student) public students;
 
     constructor(string[] memory markNames_) {
+        require(
+            markNames_.length > 0,
+            "Length of markNames must be larger than 0"
+        );
         owner = msg.sender;
-        nMarks = uint8(markNames.length);
+        nMarks = uint8(markNames_.length);
         markNames = markNames_;
         nStudents = 0;
     }
@@ -69,11 +73,8 @@ contract StudentsRegister {
         for (uint8 i = 0; i < nMarks; ++i) {
             sum += myStudent.marks[i];
         }
-        uint8 average = sum / nMarks;
-        //Round-off
-        if (2 * (nMarks - average * (nMarks)) >= nMarks) {
-            average += 1;
-        }
+        //Round-off applied
+        uint8 average = (sum + nMarks / 2) / nMarks;
         return (average);
     }
 
