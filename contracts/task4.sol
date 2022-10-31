@@ -41,8 +41,8 @@ contract UserBalance {
         _;
     }
 
-    modifier availableFee() {
-        if (balances[msg.sender] < FEE) {
+    modifier availableFee(uint256 amount_) {
+        if (amount_ < FEE) {
             revert AmountToSmall({
                 available: balances[msg.sender],
                 minRequired: FEE
@@ -80,7 +80,12 @@ contract UserBalance {
     }
 
     // @notice similar to funcion depostis but with FEE...
-    function addFund(uint256 amount_) public onlyDeposited availableFee {
-        balances[msg.sender] += amount_ - FEE;
+    function addFund(uint256 amount_)
+        public
+        onlyDeposited
+        availableFee(balances[msg.sender])
+    {
+        balances[msg.sender] -= FEE;
+        balances[msg.sender] += amount_;
     }
 }
