@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 /**
  *  @title UserBalance
- *. @notice Simple balance, any user can update its balance.
+ *. @notice Simple balance, any user can update its balance, added user information.
  */
 contract UserBalance {
     struct User {
