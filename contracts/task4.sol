@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 /**
  *  @title UserBalance
- *. @notice Simple balance with user information, any user can update its balance.
+ *. @notice Simple balance, any user can update its balance.
  */
 contract UserBalance {
     struct User {
@@ -11,7 +11,7 @@ contract UserBalance {
         uint256 age;
         bool deposited;
     }
-    error AmountToSmall(uint256 sent, uint256 minRequired);
+    error AmountToSmall(uint256 available, uint256 minRequired);
 
     mapping(address => uint256) private balances;
     mapping(address => User) private userDetail;
@@ -42,7 +42,12 @@ contract UserBalance {
     }
 
     modifier availableFee() {
-        require(balances[msg.sender] >= FEE, "Not available funds to pay fee");
+        if (balances[msg.sender] < FEE) {
+            revert AmountToSmall({
+                available: balances[msg.sender],
+                minRequired: FEE
+            });
+        }
         _;
     }
 
