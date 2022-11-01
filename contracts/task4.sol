@@ -11,7 +11,10 @@ contract UserBalance {
         uint256 age;
         bool deposited;
     }
-    error AmountToSmall(uint256 available, uint256 minRequired);
+    error AmountToSmall(uint256 available_, uint256 minRequired_);
+    error OnlyOwner(address user_, address owner_);
+    error OnlyDeposited(address user_);
+    error AvailableFunds(uint256 available_, uint256 required_);
 
     mapping(address => uint256) private balances;
     mapping(address => User) private userDetail;
@@ -24,28 +27,34 @@ contract UserBalance {
     }
 
     modifier onlyOwner() {
-        require(msg.sender == owner, "Not owner");
+        if (msg.sender != owner) {
+            revert OnlyOwner({user_: msg.sender, owner_: owner});
+        }
         _;
     }
 
     modifier onlyDeposited() {
-        require(
-            userDetail[msg.sender].deposited == true,
-            "Not previously deposited"
-        );
+        if (userDetail[msg.sender].deposited != true) {
+            revert OnlyDeposited(msg.sender);
+        }
         _;
     }
 
     modifier availableFunds(uint256 amount_) {
-        require(balances[msg.sender] >= amount_, "Not available funds");
+        if (balances[msg.sender] < amount_) {
+            revert AvailableFunds({
+                available_: balances[msg.sender],
+                required_: amount_
+            });
+        }
         _;
     }
 
     modifier availableFee(uint256 amount_) {
         if (amount_ < FEE) {
             revert AmountToSmall({
-                available: balances[msg.sender],
-                minRequired: FEE
+                available_: balances[msg.sender],
+                minRequired_: FEE
             });
         }
         _;
